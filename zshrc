@@ -8,7 +8,6 @@ zstyle :compinstall filename '/home/klungo/.zshrc'
 
 alias ls="ls --color=auto"
 alias update="sudo pacman -Syyu"
-alias neofetch="neofetch --ascii_distro arch"
 alias sbcl="rlwrap sbcl"
 alias ls="ls --color=auto"
 alias la="ls -alF --color=auto"
