@@ -20,6 +20,7 @@ alias sz="source .zshrc"
 alias df="df -h"
 alias audio="pactl info | grep 'Server Name'"
 alias xd="ls /usr/share/xsessions"
+alias vz="vim ~/.zshrc"
 ## Fix typos
 alias cd..="cd .."
 alias updat="sudo pacman -Syyu"
