@@ -1,0 +1,77 @@
+#
+# wm independent hotkeys
+#
+
+# web browser
+super + w
+	firefox
+
+# newsboat
+super + n
+	alacritty -e newsboat
+
+# music player
+super + s
+	spotify
+
+# terminal emulator
+super + Return
+	alacritty
+
+# program launcher
+super + d
+	dmenu_run
+
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd
+
+# wallpaper
+super + x
+	feh --bg-fill --randomize ~/Pictures/Wallpapers/* 
+
+#
+# berry hotkeys
+#
+
+super + shift + {Left, Down, Up, Right}
+    berryc window_move {-50 0, 0 50, 0 -50, 50 0}
+
+super + ctrl + {Left, Down, Up, Right}
+    berryc window_resize {-50 0, 0 50, 0 -50, 50 0}
+
+super + {1-9}
+    berryc switch_workspace {0-9}
+
+super + shift + {1-9}
+    berryc send_to_workspace {0-9}
+
+super +  Down
+    berryc window_resize_absolute 1000 650 && berryc window_center
+
+super + Up
+    berryc window_monocle
+
+super + f
+    berryc fullscreen
+
+super +  Right
+    berryc snap_right
+
+super + Left
+    berryc snap_left
+
+super + m
+    berryc toggle_decorations
+
+super + Tab
+    berryc cycle_focus
+
+super + q
+    berryc window_close
+
+super + c
+    berryc window_center
+
+~button1
+    berryc pointer_focus
