@@ -2,8 +2,8 @@
     editor = nvim
     ignorecase = false
 [user]
-	email = jonathangreenaway05@gmail.com
-	name = klungo-wq
+	email = []
+	name = []
 [color]
     status = auto
     diff = auto
