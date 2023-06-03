@@ -6,10 +6,14 @@ if status is-interactive
     alias g "git"
     alias t "tmux"
 
-
-
+    function fuzzyfinder
+        /home/klungo/fuzzyfinder.sh
+    end
 
 
     starship init fish | source
+
+    # Bind Ctrl-P to the fuzzyfinder func
+    bind \cp fuzzyfinder
 
 end
