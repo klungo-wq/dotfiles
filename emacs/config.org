@@ -100,7 +100,7 @@ doom-themes-enable-italic t))
 
 #+end_src
 
-* Quality of line changes
+* Quality of life changes
 
 ** Graphical Changes
 
