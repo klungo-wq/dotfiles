@@ -241,21 +241,6 @@ This package provides an orderless completion style that divides the pattern int
 
 #+end_src
 
-* 
-(use-package general
-:ensure t
-:config
-(general-define-key
-"s-x" 'execute-extended-command
-"C-c v" '("V Terminal" . vterm)
-"C-c t" '("Change Theme" . load-theme)
-"C-c s" '("Sudo Find File" . sudo-editor)
-"s-f" '("Sudo Current File" . sudo-current)
-"C-c l" '("Display Line Numbers" . display-line-numbers-mode)
-"C-c d" '("Search Dictionary" . dictionary-search)
-"C-c f" '("Change Font" . toggle-font)
-"C-c c" 'org-capture))
-
 * Vterm
 
 #+begin_src emacs-lisp
