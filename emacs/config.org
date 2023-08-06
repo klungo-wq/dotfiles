@@ -1,0 +1,428 @@
+#+TITLE: Klungos Emacs Configurations
+#+AUTHOR: Klungo
+
+* Package Management
+
+#+BEGIN_SRC emacs-lisp
+
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Comment/uncomment this line to enable MELPA Stable if desired.  See `package-archive-priorities`
+;; and `package-pinned-packages`. Most users will not need or want to do this.
+;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
+
+#+END_SRC
+
+* Theming
+
+** Theme
+#+BEGIN_SRC emacs-lisp
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+;;(load-theme 'klungo t)
+
+#+END_SRC
+
+** Doom themes
+
+#+begin_src emacs-lisp
+
+(use-package doom-themes
+:ensure t
+:config 
+(setq doom-themes-enable-bold t
+doom-themes-enable-italic t))
+
+#+end_src
+
+** Fonts
+#+begin_src emacs-lisp
+
+(set-frame-font "UbuntuMono-21" nil t)
+
+#+end_src
+
+* Org Mode
+
+** Org Tempo
+#+BEGIN_SRC emacs-lisp
+
+(require 'org-tempo)
+
+#+END_SRC
+
+** Org Bullets
+
+#+begin_src emacs-lisp
+
+(use-package org-bullets
+:ensure t
+:hook (org-mode . org-bullets-mode))
+:config
+(setq org-bullets-bullet-list '("◉" "○" "►" "•" "✸" "✿"))
+
+#+end_src
+
+** Org Settings
+
+#+begin_src emacs-lisp
+
+(require 'org-indent)
+(setq org-startup-indented t)
+(add-hook 'org-mode-hook 'visual-line-mode)
+
+#+end_src
+
+** Eletric Indent Mode
+
+#+begin_src emacs-lisp
+
+(electric-indent-mode -1)
+
+#+end_src
+
+* Org Roam
+
+#+begin_src emacs-lisp
+
+(use-package org-roam
+:ensure t
+:init 
+(setq org-roam-v2-ack t)
+:custom
+(org-roam-directory "~/RoamNotes")
+:bind (("C-c n l" . org-roam-buffer-toggle)
+("C-c n f" . org-roam-node-find)
+("C-c n i" . org-roam-node-insert))
+:config
+(org-roam-setup))
+
+#+end_src
+
+* Quality of line changes
+
+** Graphical Changes
+
+#+begin_src emacs-lisp
+
+(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message ";; Yeah man")
+(blink-cursor-mode 0)
+
+#+end_src
+
+** Transparency
+
+#+begin_src emacs-lisp
+
+;;(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+(add-to-list 'default-frame-alist '(alpha-background . 90))
+
+#+end_src
+
+** Code Block Colours 
+
+#+begin_src emacs-lisp
+
+(require 'color)
+(set-face-attribute 'org-block nil :background
+(color-darken-name
+(face-attribute 'default :background) 3))
+
+#+end_src
+
+** Non Graphical Changes
+
+#+begin_src emacs-lisp
+
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+(electric-pair-mode 1)
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+#+end_src
+
+* Vertico
+
+Vertico provides a performant and minimalistic vertical completion UI based on the default completion system
+
+#+begin_src emacs-lisp
+
+(use-package vertico
+:ensure t
+:custom
+(vertico-buffer-mode t)
+:init
+(vertico-mode))
+
+#+end_src
+
+* Consult
+
+#+begin_src emacs-lisp
+
+(use-package consult
+:ensure t)
+
+#+end_src
+
+* Orderless
+
+This package provides an orderless completion style that divides the pattern into space-separated components, and matches candidates that match all of the components in any order.
+
+#+begin_src emacs-lisp
+
+(use-package orderless
+:ensure t
+:custom
+(completion-styles '(orderless basic))
+(completion-category-overrides '((file (styles basic partial-completion)))))
+
+#+end_src
+
+* General
+
+#+begin_src emacs-lisp
+
+(use-package general
+:ensure t
+:config
+(general-create-definer klungo/leader
+:keymaps 'override
+:prefix "C-SPC")
+
+(klungo/leader
+"c" '(:ignore t :which-key "Consult")
+"c i" '(consult-imenu :which-key "Consult iMenu")
+"c s" '(consult-ripgrep :which-key "Consult Ripgrep"))
+
+(klungo/leader
+"b" '(:ingore t :which-key "Buffer")
+"b b" '(consult-buffer :which-key "List Buffers")
+"b v" '(consult-buffer-other-window :which-key "Open Buffer In Split")
+"b k" '(kill-buffer :which-key "Kill Buffer"))
+
+(klungo/leader
+"t" '(:ignore t :which-key "Toggle")
+"t t" '(load-theme :which-key "Toggle Theme")
+"t v" '(vterm-toggle :which-key "Toggle Vterm")
+"t l" '(display-line-numbers-mode :which-key "Toggle Line Numbers")
+"t f" '(toggle-font :which-key "Toggle Font"))
+
+(klungo/leader
+"d" '(:ignore t :which-key "Dired")
+"d c" '(dired-jump :which-key "Open Dired In Current Directory")
+"d d" '(dired :which-key "Dired"))
+
+(klungo/leader
+"w" '(:ignore t :which-key "Window")
+"w v" '(split-window-vertically :which-key "Create Vertical Split")
+"w h" '(split-window-horizontally :which-key "Create Horizontal Split")
+"w d" '(delete-window :which-key "Delete Window")
+"w w" '(window-swap-states :which-key "Swap Window"))
+
+(klungo/leader
+"e" '(:ignore t :which-key "Emacs")
+"e r" '(reload-config :which-key "Reload Emacs Config")
+"e d" '(dictionary-search :which-key "Search Dictionary"))
+
+(klungo/leader
+"s" '(:ignore t :which-key "Sudo")
+"s f" '(sudo-editor :which-key "Sudo Find File")
+"s c" '(sudo-current :which-key "Sudo Edit Current File"))
+
+(general-define-key
+"C-s" 'consult-line
+"s-x" 'execute-extended-command))
+
+#+end_src
+
+* 
+(use-package general
+:ensure t
+:config
+(general-define-key
+"s-x" 'execute-extended-command
+"C-c v" '("V Terminal" . vterm)
+"C-c t" '("Change Theme" . load-theme)
+"C-c s" '("Sudo Find File" . sudo-editor)
+"s-f" '("Sudo Current File" . sudo-current)
+"C-c l" '("Display Line Numbers" . display-line-numbers-mode)
+"C-c d" '("Search Dictionary" . dictionary-search)
+"C-c f" '("Change Font" . toggle-font)
+"C-c c" 'org-capture))
+
+* Vterm
+
+#+begin_src emacs-lisp
+
+(use-package vterm
+:ensure t
+:config
+(setq shell-file-name "/usr/bin/fish"
+vterm-max-scrollback 5000))
+
+#+end_src
+
+* Vterm Toggle
+
+#+begin_src emacs-lisp
+
+(use-package vterm-toggle
+:ensure t
+:after vterm
+:config)
+(setq vterm-toggle-fullscreen-p nil)
+(add-to-list 'display-buffer-alist
+             '((lambda (buffer-or-name _)
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                (display-buffer-reuse-window display-buffer-at-bottom)
+                ;;(display-buffer-reuse-window display-buffer-in-direction)
+                ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                ;;(direction . bottom)
+                ;;(dedicated . t) ;dedicated is supported in emacs27
+                (reusable-frames . visible)
+                (window-height . 0.3)))
+
+#+end_src
+
+* Web Mode
+
+#+begin_src emacs-lisp
+
+(use-package web-mode
+:ensure t
+:mode (("\\.html?\\'" . web-mode)
+("\\.css\\'" . web-mode)
+("\\.js\\'" . web-mode)
+("\\.php\\'" . web-mode))
+:config
+(setq web-mode-markup-indent-offset 2
+web-mode-css-indent-offset 2
+web-mode-code-indent-offset 2
+web-mode-enable-auto-pairing t
+web-mode-enable-auto-closing t
+web-mode-enable-auto-quoting t))
+
+#+end_src
+
+* File Readers
+
+** PDF Tools
+
+#+begin_src emacs-lisp
+
+(use-package pdf-tools
+:ensure t
+:config
+(pdf-loader-install))
+
+#+end_src
+
+** Epub
+
+#+begin_src emacs-lisp
+
+(use-package nov
+:ensure t
+:mode ("\\.epub\\'" . nov-mode))
+
+#+end_src
+
+* Elisp Functions
+
+** Theme Switcher
+
+#+begin_src emacs-lisp
+
+(defun switch-theme ()
+"Toggle between klungo and default Emacs themes."
+(interactive)
+(if (equal (frame-parameter nil 'background-mode) 'dark)
+(disable-theme 'klungo)
+(load-theme 'klungo t)))
+
+#+end_src
+
+** Sudo Editor
+
+#+begin_src emacs-lisp
+
+(defun sudo-editor ()
+"Open a find-file buffer with sudo privilages."
+(interactive)
+(let ((default-directory "/sudo::"))
+(call-interactively 'find-file)))
+
+#+end_src
+
+** Sudo Current
+
+#+begin_src emacs-lisp
+
+(defun sudo-current ()
+"Edit the current file with sudo."
+(interactive)
+(when buffer-file-name
+(setq sudo-file-name (concat "/sudo:root@localhost:" buffer-file-name))
+(find-file sudo-file-name)))
+
+#+end_src
+
+** Font Switcher
+
+#+begin_src emacs-lisp
+
+(defvar my-default-font "UbuntuMono")
+(defvar my-alternate-font "CaskaydiaCove Nerd Font")
+
+(defvar my-font-flag t)
+
+(defun toggle-font ()
+"Toggle between the default font and alternate font."
+(interactive)
+(if my-font-flag
+(set-frame-font my-alternate-font nil t)
+(set-frame-font my-default-font nil t))
+(setq my-font-flag (not my-font-flag)))
+
+#+end_src
+
+** Reload Config
+
+#+begin_src emacs-lisp
+
+(defun reload-config()
+"Reload your emacs config"
+(interactive)
+(load-file "~/.emacs.d/init.el"))
+
+#+end_src
+
+* Which Key
+
+#+begin_src emacs-lisp
+
+(use-package which-key
+:ensure t
+:config
+(which-key-mode)
+(setq which-key-idle-delay 0.5))
+
+#+end_src
+
+* Darkroom mode
+
+#+begin_src emacs-lisp
+
+(use-package darkroom
+:ensure t)
+
+#+end_src
