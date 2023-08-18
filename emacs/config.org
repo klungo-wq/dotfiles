@@ -16,11 +16,24 @@
 
 * Theming
 
+** Modeline
+
+#+begin_src emacs-lisp
+
+(use-package doom-modeline
+:ensure t
+:init (doom-modeline-mode 1)
+:custom 
+(doom-modeline-height 50))
+
+#+end_src
+
 ** Theme
+
 #+BEGIN_SRC emacs-lisp
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-;;(load-theme 'klungo t)
+(load-theme 'doom-one t)
 
 #+END_SRC
 
@@ -37,6 +50,7 @@ doom-themes-enable-italic t))
 #+end_src
 
 ** Fonts
+
 #+begin_src emacs-lisp
 
 (set-frame-font "UbuntuMono-21" nil t)
@@ -46,6 +60,7 @@ doom-themes-enable-italic t))
 * Org Mode
 
 ** Org Tempo
+
 #+BEGIN_SRC emacs-lisp
 
 (require 'org-tempo)
@@ -204,7 +219,7 @@ This package provides an orderless completion style that divides the pattern int
 "b" '(:ingore t :which-key "Buffer")
 "b b" '(consult-buffer :which-key "List Buffers")
 "b v" '(consult-buffer-other-window :which-key "Open Buffer In Split")
-"b k" '(kill-buffer :which-key "Kill Buffer"))
+"k k" '(kill-buffer :which-key "Kill Buffer"))
 
 (klungo/leader
 "t" '(:ignore t :which-key "Toggle")
@@ -227,6 +242,7 @@ This package provides an orderless completion style that divides the pattern int
 
 (klungo/leader
 "e" '(:ignore t :which-key "Emacs")
+"e f" '(open-config :which-key "Open Config")
 "e r" '(reload-config :which-key "Reload Emacs Config")
 "e d" '(dictionary-search :which-key "Search Dictionary"))
 
@@ -234,6 +250,9 @@ This package provides an orderless completion style that divides the pattern int
 "s" '(:ignore t :which-key "Sudo")
 "s f" '(sudo-editor :which-key "Sudo Find File")
 "s c" '(sudo-current :which-key "Sudo Edit Current File"))
+
+(klungo/leader
+"." '(find-file :which-key "Find File"))
 
 (general-define-key
 "C-s" 'consult-line
@@ -388,6 +407,17 @@ web-mode-enable-auto-quoting t))
 "Reload your emacs config"
 (interactive)
 (load-file "~/.emacs.d/init.el"))
+
+#+end_src
+
+** Open Config
+
+#+begin_src emacs-lisp
+
+(defun open-config()
+"Open your emacs config"
+(interactive)
+(find-file "~/.emacs.d/config.org"))
 
 #+end_src
 
