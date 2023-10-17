@@ -36,6 +36,14 @@
 
 #+end_src
 
+* Byte Compile Setup
+
+#+begin_src emacs-lisp
+
+(setq load-path (cons "~/.emacs.d/dotemacs/" load-path))
+
+#+end_src
+
 * Theming
 
 ** Modeline
@@ -63,7 +71,7 @@ doom-themes-enable-italic t))
 #+BEGIN_SRC emacs-lisp
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'doom-city-lights t)
+(load-theme 'doom-gruvbox t)
 
 #+END_SRC
 
@@ -176,6 +184,15 @@ org-image-actual-width '(300))
 
 * Quality of life changes
 
+** Rainbow Mode
+
+#+begin_src emacs-lisp
+
+(use-package rainbow-mode
+:hook (emacs-lisp-mode text-mode lisp-mode))
+
+#+end_src
+
 ** Graphical Changes
 
 #+begin_src emacs-lisp
@@ -220,110 +237,19 @@ org-image-actual-width '(300))
 
 #+end_src
 
-* Vertico
-
-Vertico provides a performant and minimalistic vertical completion UI based on the default completion system
+* Completion Frameworks
 
 #+begin_src emacs-lisp
 
-(use-package vertico
-:custom
-(vertico-buffer-mode t)
-:init
-(vertico-mode))
+(require 'completions)
 
 #+end_src
 
-* Consult
+* Keybindings
 
 #+begin_src emacs-lisp
 
-(use-package consult)
-
-#+end_src
-
-* Orderless
-
-This package provides an orderless completion style that divides the pattern into space-separated components, and matches candidates that match all of the components in any order.
-
-#+begin_src emacs-lisp
-
-(use-package orderless
-:custom
-(completion-styles '(orderless basic))
-(completion-category-overrides '((file (styles basic partial-completion)))))
-
-#+end_src
-
-* Marginalia
-
-#+begin_src emacs-lisp
-
-(use-package marginalia
-:bind (:map minibuffer-local-map
-("M-A". marginalia-cycle))
-:init
-(marginalia-mode))
-
-#+end_src
-
-* General
-
-#+begin_src emacs-lisp
-
-(use-package general
-:config
-(general-create-definer klungo/leader
-:keymaps 'override
-:prefix "C-SPC")
-
-(klungo/leader
-"c" '(:ignore t :which-key "Consult")
-"c i" '(consult-imenu :which-key "Consult iMenu")
-"c s" '(consult-ripgrep :which-key "Consult Ripgrep"))
-
-(klungo/leader
-"b" '(:ingore t :which-key "Buffer")
-"b b" '(consult-buffer :which-key "List Buffers")
-"b v" '(consult-buffer-other-window :which-key "Open Buffer In Split")
-"k k" '(kill-buffer :which-key "Kill Buffer"))
-
-(klungo/leader
-"t" '(:ignore t :which-key "Toggle")
-"t t" '(load-theme :which-key "Toggle Theme")
-"t v" '(vterm-toggle :which-key "Toggle Vterm")
-"t l" '(display-line-numbers-mode :which-key "Toggle Line Numbers")
-"t f" '(toggle-font :which-key "Toggle Font"))
-
-(klungo/leader
-"d" '(:ignore t :which-key "Dired")
-"d c" '(dired-jump :which-key "Open Dired In Current Directory")
-"d d" '(dired :which-key "Dired"))
-
-(klungo/leader
-"w" '(:ignore t :which-key "Window")
-"w v" '(split-window-vertically :which-key "Create Vertical Split")
-"w h" '(split-window-horizontally :which-key "Create Horizontal Split")
-"w q" '(delete-window :which-key "Delete Window")
-"w w" '(window-swap-states :which-key "Swap Window"))
-
-(klungo/leader
-"e" '(:ignore t :which-key "Emacs")
-"e f" '(open-config :which-key "Open Config")
-"e r" '(reload-config :which-key "Reload Emacs Config")
-"e d" '(dictionary-search :which-key "Search Dictionary"))
-
-(klungo/leader
-"s" '(:ignore t :which-key "Sudo")
-"s f" '(sudo-editor :which-key "Sudo Find File")
-"s c" '(sudo-current :which-key "Sudo Edit Current File"))
-
-(klungo/leader
-"." '(find-file :which-key "Find File"))
-
-(general-define-key
-"C-s" 'consult-line
-"s-x" 'execute-extended-command))
+(require 'keybindings)
 
 #+end_src
 
@@ -405,81 +331,13 @@ web-mode-enable-auto-quoting t))
 
 * Elisp Functions
 
-** Theme Switcher
-
 #+begin_src emacs-lisp
 
-(defun switch-theme ()
-"Toggle between klungo and default Emacs themes."
-(interactive)
-(if (equal (frame-parameter nil 'background-mode) 'dark)
-(disable-theme 'klungo)
-(load-theme 'klungo t)))
-
-#+end_src
-
-** Sudo Editor
-
-#+begin_src emacs-lisp
-
-(defun sudo-editor ()
-"Open a find-file buffer with sudo privilages."
-(interactive)
-(let ((default-directory "/sudo::"))
-(call-interactively 'find-file)))
-
-#+end_src
-
-** Sudo Current
-
-#+begin_src emacs-lisp
-
-(defun sudo-current ()
-"Edit the current file with sudo."
-(interactive)
-(when buffer-file-name
-(setq sudo-file-name (concat "/sudo:root@localhost:" buffer-file-name))
-(find-file sudo-file-name)))
-
-#+end_src
-
-** Font Switcher
-
-#+begin_src emacs-lisp
-
-(defvar my-default-font "UbuntuMono")
-(defvar my-alternate-font "CaskaydiaCove Nerd Font")
-
-(defvar my-font-flag t)
-
-(defun toggle-font ()
-"Toggle between the default font and alternate font."
-(interactive)
-(if my-font-flag
-(set-frame-font my-alternate-font nil t)
-(set-frame-font my-default-font nil t))
-(setq my-font-flag (not my-font-flag)))
-
-#+end_src
-
-** Reload Config
-
-#+begin_src emacs-lisp
-
-(defun reload-config()
-"Reload your emacs config"
-(interactive)
-(load-file "~/.emacs.d/init.el"))
-
-#+end_src
-
-** Open Config
-
-#+begin_src emacs-lisp
-
-(defun open-config()
-"Open your emacs config"
-(interactive)
-(find-file "~/.emacs.d/config.org"))
+(require 'functions)
+(autoload 'sudo-editor "functions")
+(autoload 'sudo-current "functions")
+(autoload 'toggle-font "functions")
+(autoload 'reload-config "functions")
+(autoload 'open-config "functions")
 
 #+end_src
